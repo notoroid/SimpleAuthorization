@@ -22,6 +22,7 @@ static BOOL s_acceptFacebookPost = NO;
 @interface IDPAuthorizationViewController ()
 {
     IDPAuthorizationViewControllerAuthorizationType _authorizationType;
+    NSDictionary *_option;
 }
 @end
 
@@ -47,7 +48,7 @@ static BOOL s_acceptFacebookPost = NO;
     return backgroundView;
 }
 
-+ (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion
++ (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType  option:(NSDictionary *)option viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion
 {
     __weak UINavigationController *navigationController = [viewController navigationController];
     BOOL navigationBarHidden = navigationController != nil ? navigationController.navigationBarHidden : YES;
@@ -70,7 +71,7 @@ static BOOL s_acceptFacebookPost = NO;
                 CGRect frame = (CGRect){CGPointZero,[viewController view].frame.size};
                 UIViewAutoresizing autoresizingMask = [viewController view].autoresizingMask;
                 
-                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter];
+                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter option:option];
                 
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:asstsLibraryAuthorizationViewController];
                 navigationController.navigationBarHidden = YES;
@@ -123,7 +124,7 @@ static BOOL s_acceptFacebookPost = NO;
                 CGRect frame = (CGRect){CGPointZero,[viewController view].frame.size};
                 UIViewAutoresizing autoresizingMask = [viewController view].autoresizingMask;
                 
-                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeFacebook];
+                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeFacebook option:option];
                 
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:asstsLibraryAuthorizationViewController];
                 navigationController.navigationBarHidden = YES;
@@ -150,21 +151,32 @@ static BOOL s_acceptFacebookPost = NO;
                 if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
                     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
                     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-                    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                                             @"yourfacebookappID", ACFacebookAppIdKey,
-                                             @[@"publish_actions"],ACFacebookPermissionsKey,
-                                             ACFacebookAudienceFriends,ACFacebookAudienceKey,
-                                             nil];
-                    [accountStore requestAccessToAccountsWithType:accountType
-                                                          options:options
-                            completion:^(BOOL granted, NSError *error) {
-                                if( granted ){
-                                    completion(error,IDPAuthorizationViewControllerAuthorizationStatusAuthorized);
-                                }else{
-                                    completion(error,IDPAuthorizationViewControllerAuthorizationStatusDenied);
-                                }
-                            }
-                     ];
+
+                    NSString *facebookAppID = option[kIDPAuthorizationViewControllerOptionFacebookAppID];
+                    
+                    if (facebookAppID.length > 0) {
+                        NSDictionary *options = @{
+                                                  ACFacebookAppIdKey:facebookAppID
+                                                  ,ACFacebookPermissionsKey:@[@"email", @"basic_info"]
+                                                  ,ACFacebookAudienceKey:ACFacebookAudienceFriends
+                                                  };
+                        
+                        [accountStore requestAccessToAccountsWithType:accountType
+                                                              options:options
+                               completion:^(BOOL granted, NSError *error) {
+                                   
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       if( granted ){
+                                           completion(error,IDPAuthorizationViewControllerAuthorizationStatusAuthorized);
+                                       }else{
+                                           completion(error,IDPAuthorizationViewControllerAuthorizationStatusDenied);
+                                       }
+                                   });
+                               }
+                         ];
+                    }else{
+                        completion(nil,IDPAuthorizationViewControllerAuthorizationNottingApplicationID);
+                    }
                 }else{
                     completion(nil,IDPAuthorizationViewControllerAuthorizationNoAvailable);
                 }
@@ -197,7 +209,7 @@ static BOOL s_acceptFacebookPost = NO;
                 CGRect frame = (CGRect){CGPointZero,[viewController view].frame.size};
                 UIViewAutoresizing autoresizingMask = [viewController view].autoresizingMask;
                 
-                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeAssetsLibrary];
+                IDPAuthorizationViewController* asstsLibraryAuthorizationViewController = [[IDPAuthorizationViewController alloc] initWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeAssetsLibrary option:option];
                 
                 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:asstsLibraryAuthorizationViewController];
                 navigationController.navigationBarHidden = YES;
@@ -265,7 +277,7 @@ static BOOL s_acceptFacebookPost = NO;
             break;
         case IDPAuthorizationViewControllerAuthorizationTypeFacebook:
         {
-            BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
+            BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
             if( isAvailable != YES ){
                 NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > Facebook >  をタップし、%@ へのアクセスを有効にしてください。",applicationName];
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -342,11 +354,12 @@ static BOOL s_acceptFacebookPost = NO;
 	}
 }
 
-- (instancetype) initWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType
+- (instancetype) initWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType option:(NSDictionary *)option
 {
     self = [super init];
     if (self) {
         _authorizationType = authorizationType;
+        _option = option;
     }
     return self;
 }
@@ -463,11 +476,16 @@ static BOOL s_acceptFacebookPost = NO;
             if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
                 ACAccountStore *accountStore = [[ACAccountStore alloc] init];
                 ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-                NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                                         @"yourfacebookappID", ACFacebookAppIdKey,
-                                         @[@"publish_actions"],ACFacebookPermissionsKey,
-                                         ACFacebookAudienceFriends,ACFacebookAudienceKey,
-                                         nil];
+                
+                NSString* facebookAppID = _option[kIDPAuthorizationViewControllerOptionFacebookAppID];
+                NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:@{
+                                                    ACFacebookPermissionsKey:@[@"email", @"basic_info"]
+                                                   ,ACFacebookAudienceKey:ACFacebookAudienceFriends
+                                                   }];
+                if( facebookAppID.length > 0 ){
+                    options[ACFacebookAppIdKey] = facebookAppID;
+                }
+                
                 [accountStore requestAccessToAccountsWithType:accountType
                                                       options:options
                                                    completion:^(BOOL granted, NSError *error) {

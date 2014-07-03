@@ -23,18 +23,22 @@ typedef NS_ENUM(NSInteger, IDPAuthorizationViewControllerAuthorizationStatus)
     ,IDPAuthorizationViewControllerAuthorizationStatusCancel // later authorize(Assets Library,facebook) or later accept(twitter)
     ,IDPAuthorizationViewControllerAuthorizationStatusRestricted // AssetsLibrary
     ,IDPAuthorizationViewControllerAuthorizationNoAvailable // Twitter
-    ,IDPAuthorizationViewControllerAuthorizationStatusFailure // fail Facebook 
+    ,IDPAuthorizationViewControllerAuthorizationStatusFailure // fail Facebook
+    ,IDPAuthorizationViewControllerAuthorizationNottingApplicationID // fail facebook
 };
+
+#define kIDPAuthorizationViewControllerOptionFacebookAppID @"FacebookAppID"
 
 typedef void (^IDPAuthorizationViewControllerCompletionBlock)(NSError *error,IDPAuthorizationViewControllerAuthorizationStatus authorizationStatus);
 
 @interface IDPAuthorizationViewController : IDPAbstRichModalViewController
 
 @property (readonly,nonatomic) IDPAuthorizationViewControllerAuthorizationType authorizationType;
+@property (readonly,nonatomic) NSDictionary *option;
 
-- (instancetype) initWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType;
+- (instancetype) initWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType option:(NSDictionary *)option;
 
-+ (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion;
++ (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType option:(NSDictionary *)option viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion;
 
 + (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType;
 + (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag;

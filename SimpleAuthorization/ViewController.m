@@ -24,7 +24,7 @@
 {
     [super viewDidAppear:animated];
     
-    [IDPAuthorizationViewController authorizationWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter
+    [IDPAuthorizationViewController authorizationWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter option:nil 
                                                         viewController:self completion:^(NSError *error, IDPAuthorizationViewControllerAuthorizationStatus authorizationStatus) {
         
         switch (authorizationStatus) {
