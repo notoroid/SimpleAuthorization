@@ -39,8 +39,6 @@
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusCancel:
                 break;
-            case IDPAuthorizationViewControllerAuthorizationAccept:
-                break;
             case IDPAuthorizationViewControllerAuthorizationNoAvailable:
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusFailure:

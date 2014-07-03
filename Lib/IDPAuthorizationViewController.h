@@ -22,7 +22,6 @@ typedef NS_ENUM(NSInteger, IDPAuthorizationViewControllerAuthorizationStatus)
     ,IDPAuthorizationViewControllerAuthorizationStatusDenied // denied(Assets Library,facebook)
     ,IDPAuthorizationViewControllerAuthorizationStatusCancel // later authorize(Assets Library,facebook) or later accept(twitter)
     ,IDPAuthorizationViewControllerAuthorizationStatusRestricted // AssetsLibrary
-    ,IDPAuthorizationViewControllerAuthorizationAccept // accept Twitter post
     ,IDPAuthorizationViewControllerAuthorizationNoAvailable // Twitter
     ,IDPAuthorizationViewControllerAuthorizationStatusFailure // fail Facebook 
 };
