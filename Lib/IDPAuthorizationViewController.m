@@ -242,6 +242,11 @@ static BOOL s_acceptFacebookPost = NO;
 
 + (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType
 {
+    [IDPAuthorizationViewController showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType delegate:nil tag:0];
+}
+
++ (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag;
+{
     NSString *localizedAppName = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"CFBundleDisplayName"];
     NSString* applicationName = localizedAppName ? localizedAppName : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];
     
@@ -252,7 +257,8 @@ static BOOL s_acceptFacebookPost = NO;
             BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
             if( isAvailable != YES ){
                 NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > Twitter >  をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                alertView.tag = tag;
                 [alertView show];
             }
         }
@@ -262,7 +268,8 @@ static BOOL s_acceptFacebookPost = NO;
             BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
             if( isAvailable != YES ){
                 NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > Facebook >  をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                alertView.tag = tag;
                 [alertView show];
             }
         }
@@ -273,12 +280,12 @@ static BOOL s_acceptFacebookPost = NO;
             //    NSString *labelText = nil;
             if (status == ALAuthorizationStatusRestricted){
                 NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > プライバシー > 写真 をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                alertView.tag = tag;
                 [alertView show];
             }else if (status == ALAuthorizationStatusDenied){
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:@"写真アルバムへのアクセスが制限されています。" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:@"写真アルバムへのアクセスが制限されています。" delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                alertView.tag = tag;
                 [alertView show];
             }
         }

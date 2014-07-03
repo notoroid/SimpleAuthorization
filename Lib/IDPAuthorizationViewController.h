@@ -37,6 +37,7 @@ typedef void (^IDPAuthorizationViewControllerCompletionBlock)(NSError *error,IDP
 + (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion;
 
 + (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType;
++ (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag;
 
 @property(strong,nonatomic) IDPAuthorizationViewControllerCompletionBlock completion;
 
