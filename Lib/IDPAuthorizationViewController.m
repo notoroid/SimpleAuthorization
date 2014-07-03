@@ -49,6 +49,9 @@ static BOOL s_acceptFacebookPost = NO;
 
 + (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion
 {
+    __weak UINavigationController *navigationController = [viewController navigationController];
+    [navigationController setNavigationBarHidden:YES animated:YES];
+
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [IDPAuthorizationViewController updateRepositoryWithUpdate:YES];
@@ -137,6 +140,9 @@ static BOOL s_acceptFacebookPost = NO;
                 
                 [viewController addChildViewController:newViewController];
                 [[viewController view] addSubview:s_authorizationView];
+
+                [navigationController setNavigationBarHidden:YES animated:YES];
+                    // ナビゲーションを非表示とする
             }else{
                 // ここで拒否されていないかのチェックを行う事
                 if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
@@ -207,6 +213,9 @@ static BOOL s_acceptFacebookPost = NO;
                 
                 [viewController addChildViewController:newViewController];
                 [[viewController view] addSubview:[newViewController view]];
+                
+                [navigationController setNavigationBarHidden:YES animated:YES];
+                    // ナビゲーションを非表示とする
             }else if( status == ALAuthorizationStatusAuthorized ){
                 dispatch_async(dispatch_get_main_queue(), ^{
                     completion(nil,IDPAuthorizationViewControllerAuthorizationStatusAuthorized);
@@ -278,6 +287,9 @@ static BOOL s_acceptFacebookPost = NO;
 
 + (void) closeIntroduction
 {
+    __weak UINavigationController *navigationController = [s_authorizationViewController.parentViewController navigationController];
+    [navigationController setNavigationBarHidden:NO animated:YES];
+    
     [UIView animateWithDuration:.25f animations:^{
         s_authorizationView.alpha = .0f;
     } completion:^(BOOL finished) {
