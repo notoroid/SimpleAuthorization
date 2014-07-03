@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.source_files  = "Lib/**/*.{h,m}"
   s.dependency 'UIImage+BlurredFrame'
 
-  s.public_header_files = "Lib/IDPAuthorizationViewController.h"
+  s.public_header_files = "Lib/**/*.h"
 
   s.framework  = "QuartzCore"
 
