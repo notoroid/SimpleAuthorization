@@ -50,7 +50,7 @@ static BOOL s_acceptFacebookPost = NO;
 + (void) authorizationWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType viewController:(id)viewController completion:(IDPAuthorizationViewControllerCompletionBlock)completion
 {
     __weak UINavigationController *navigationController = [viewController navigationController];
-    [navigationController setNavigationBarHidden:YES animated:YES];
+    BOOL navigationBarHidden = navigationController != nil ? navigationController.navigationBarHidden : YES;
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -80,6 +80,7 @@ static BOOL s_acceptFacebookPost = NO;
                 
                 [asstsLibraryAuthorizationController setBackgroundView:backgroundView];
                 [asstsLibraryAuthorizationController setCompletion:completion];
+                [asstsLibraryAuthorizationController setBoardOffset:navigationBarHidden ? CGPointZero : CGPointMake(.0f, 44.0f)];
                 
                 s_authorizationViewController = newViewController;
                 s_authorizationView = [newViewController view];
@@ -132,6 +133,7 @@ static BOOL s_acceptFacebookPost = NO;
                 
                 [asstsLibraryAuthorizationController setBackgroundView:backgroundView];
                 [asstsLibraryAuthorizationController setCompletion:completion];
+                [asstsLibraryAuthorizationController setBoardOffset:navigationBarHidden ? CGPointZero : CGPointMake(.0f, 44.0f)];
                 
                 s_authorizationViewController = newViewController;
                 s_authorizationView = [newViewController view];
@@ -205,6 +207,7 @@ static BOOL s_acceptFacebookPost = NO;
                 
                 [asstsLibraryAuthorizationController setBackgroundView:backgroundView];
                 [asstsLibraryAuthorizationController setCompletion:completion];
+                [asstsLibraryAuthorizationController setBoardOffset:navigationBarHidden ? CGPointZero : CGPointMake(.0f, 44.0f)];
                 
                 s_authorizationViewController = newViewController;
                 s_authorizationView = [newViewController view];
@@ -287,9 +290,6 @@ static BOOL s_acceptFacebookPost = NO;
 
 + (void) closeIntroduction
 {
-    __weak UINavigationController *navigationController = [s_authorizationViewController.parentViewController navigationController];
-    [navigationController setNavigationBarHidden:NO animated:YES];
-    
     [UIView animateWithDuration:.25f animations:^{
         s_authorizationView.alpha = .0f;
     } completion:^(BOOL finished) {

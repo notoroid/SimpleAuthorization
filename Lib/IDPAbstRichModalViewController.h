@@ -16,6 +16,7 @@
 @interface IDPAbstRichModalViewController : UIViewController
 
 @property (strong,nonatomic) UIView *backgroundView;
+@property (assign,nonatomic) CGPoint boardOffset;
 @property (weak,nonatomic) IBOutlet UIView *boardView;
 @property (weak,nonatomic)  IBOutlet UIButton *laterButton;
 @property (weak,nonatomic)  IBOutlet UIButton *authorizedButton;

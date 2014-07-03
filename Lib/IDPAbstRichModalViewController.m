@@ -33,7 +33,7 @@ static UIImage *s_maskImage = nil;
     [super loadView];
     
     if( _boardView == nil ){
-        UIView *boardView = [[UIView alloc] initWithFrame:CGRectMake(16, 32, 288, 401)];
+        UIView *boardView = [[UIView alloc] initWithFrame:CGRectMake(16 + _boardOffset.x, 32 + _boardOffset.y, 288, 401)];
         boardView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleBottomMargin;
         boardView.backgroundColor = [UIColor whiteColor];
         
