@@ -365,10 +365,10 @@ static BOOL s_acceptPushNotification = NO;
 {
 	NSString *repositoryFileName = @"simpleAuthorization.dat";
     NSString *repositoryAcceptTwitterPost = @"AcceptTwitterPost";
-    NSString *repositoryAcceptFacebookPost = @"FacebookPost";
+    NSString *repositoryAcceptFacebookPost = @"AcceptFacebookPost";
     NSString *repositoryPushNotification = @"PushNotification";
         // AssetLibrary,Facebook は都度確認を行うので必用無し
-        // Twitter のみ初回確認有り
+        // Twitter,Facebook は初回確認有り
     
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 	NSString *documentDirectory = [paths objectAtIndex:0];
