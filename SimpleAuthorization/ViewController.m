@@ -24,10 +24,16 @@
 {
     [super viewDidAppear:animated];
     
-    [IDPAuthorizationViewController authorizationWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter option:nil 
+    BOOL isAvailable = [UIApplication sharedApplication].enabledRemoteNotificationTypes & (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert) ? YES : NO;
+    NSLog(@"isAvailable=%@",isAvailable ? @"YES" : @"NO" );
+    
+    [IDPAuthorizationViewController authorizationWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter option:nil
                                                         viewController:self completion:^(NSError *error, IDPAuthorizationViewControllerAuthorizationStatus authorizationStatus) {
         
         switch (authorizationStatus) {
+            case IDPAuthorizationViewControllerAuthorizationContinuePushNotificationRegistration:
+                [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
+                break;
             case IDPAuthorizationViewControllerAuthorizationStatusAuthorized:
                 
                 break;
