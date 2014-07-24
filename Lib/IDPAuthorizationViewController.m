@@ -459,6 +459,14 @@ static BOOL s_acceptPushNotification = NO;
                                                                                           ,NSForegroundColorAttributeName:[UIColor whiteColor]
                                                                                           }
                                               ] forState:UIControlStateNormal];
+            
+            [buttonAccept setAttributedTitle:[[NSAttributedString alloc] initWithString:@"通知を許可する"
+                                                                             attributes:@{
+                                                                                           NSFontAttributeName:[UIFont boldSystemFontOfSize:14.0f]
+                                                                                          ,NSForegroundColorAttributeName:[UIColor colorWithRed: 0 green: 0.424 blue: 0.941 alpha: 1]
+                                                                                          }
+                                              ] forState:UIControlStateHighlighted];
+            
         }
             break;
         case IDPAuthorizationViewControllerAuthorizationTypeAssetsLibrary:
@@ -494,7 +502,12 @@ static BOOL s_acceptPushNotification = NO;
                                                                                               ,NSForegroundColorAttributeName:[UIColor whiteColor]
                                                                                               }
                                                   ] forState:UIControlStateNormal];
-            
+            [buttonAccept setAttributedTitle:[[NSAttributedString alloc] initWithString:@"了解"
+                                                                             attributes:@{
+                                                                                          NSFontAttributeName:[UIFont boldSystemFontOfSize:14.0f]
+                                                                                          ,NSForegroundColorAttributeName:[UIColor colorWithRed: 0 green: 0.424 blue: 0.941 alpha: 1]
+                                                                                          }
+                                              ] forState:UIControlStateHighlighted];
         }
             break;
         default:

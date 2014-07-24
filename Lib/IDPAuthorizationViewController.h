@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, IDPAuthorizationViewControllerAuthorizationStatus)
 };
 
 #define kIDPAuthorizationViewControllerOptionFacebookAppID @"FacebookAppID"
+    // initWithAuthorizationType: option: method option
 
 typedef void (^IDPAuthorizationViewControllerCompletionBlock)(NSError *error,IDPAuthorizationViewControllerAuthorizationStatus authorizationStatus);
 
