@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "SimpleAuthorization"
-  s.version      = "0.9.3"
+  s.version      = "0.9.2"
   s.summary      = "SimpleAuthorization will display a message in the app side prior to iOS built-in access authentication within the application."
 
   s.description  = <<-DESC
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "7.0"
 
-  s.source       = { :git => "https://github.com/notoroid/SimpleAuthorization.git", :tag => 'v0.9.3'}
+  s.source       = { :git => "https://github.com/notoroid/SimpleAuthorization.git", :tag => 'v0.9.2'}
 
   s.source_files  = "Lib/**/*.{h,m}"
   s.dependency 'UIImage+BlurredFrame'
