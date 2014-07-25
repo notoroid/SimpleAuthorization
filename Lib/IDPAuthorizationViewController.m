@@ -299,17 +299,24 @@ static BOOL s_acceptPushNotification = NO;
 
 + (void) showDenyAlertWithAuthorizationType:(IDPAuthorizationViewControllerAuthorizationType)authorizationType delegate:(id<UIAlertViewDelegate>)delegate tag:(NSInteger)tag;
 {
-    NSString *localizedAppName = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"CFBundleDisplayName"];
-    NSString* applicationName = localizedAppName ? localizedAppName : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];
-    
-    
     switch (authorizationType) {
+        case IDPAuthorizationViewControllerAuthorizationTypePushNotification:
+        {
+            BOOL isAvailable = [UIApplication sharedApplication].enabledRemoteNotificationTypes & (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert) ? YES : NO;
+
+            if( isAvailable != YES ){
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:IDP_AUTHORIZATION_ALERT_NOTIFICATION_TITLE message:IDP_AUTHORIZATION_ALERT_NOTIFICATION_MESSAGE delegate:delegate cancelButtonTitle:IDP_AUTHORIZATION_ALERT_OK otherButtonTitles:nil];
+                alertView.tag = tag;
+                [alertView show];
+            }
+            
+        }
+            break;
         case IDPAuthorizationViewControllerAuthorizationTypeTwitter:
         {
             BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
             if( isAvailable != YES ){
-                NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > Twitter >  をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:IDP_AUTHORIZATION_ALERT_TWITTER_TITLE message:IDP_AUTHORIZATION_ALERT_TWITTER_MESSAGE delegate:delegate cancelButtonTitle:IDP_AUTHORIZATION_ALERT_OK otherButtonTitles:nil];
                 alertView.tag = tag;
                 [alertView show];
             }
@@ -319,8 +326,7 @@ static BOOL s_acceptPushNotification = NO;
         {
             BOOL isAvailable = [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
             if( isAvailable != YES ){
-                NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > Facebook >  をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Twitterのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:IDP_AUTHORIZATION_ALERT_FACEBOOK_TITLE message:IDP_AUTHORIZATION_ALERT_FACEBOOK_MESSAGE delegate:delegate cancelButtonTitle:IDP_AUTHORIZATION_ALERT_OK otherButtonTitles:nil];
                 alertView.tag = tag;
                 [alertView show];
             }
@@ -331,12 +337,11 @@ static BOOL s_acceptPushNotification = NO;
             ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
             //    NSString *labelText = nil;
             if (status == ALAuthorizationStatusRestricted){
-                NSString *message = [NSString stringWithFormat:@"ホーム画面から設定 > プライバシー > 写真 をタップし、%@ へのアクセスを有効にしてください。",applicationName];
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:message delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:IDP_AUTHORIZATION_ALERT_ASSETS_TITLE message:IDP_AUTHORIZATION_ALERT_ASSETS_MESSAGE delegate:delegate cancelButtonTitle:IDP_AUTHORIZATION_ALERT_OK otherButtonTitles:nil];
                 alertView.tag = tag;
                 [alertView show];
             }else if (status == ALAuthorizationStatusDenied){
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"写真アルバムへのアクセス" message:@"写真アルバムへのアクセスが制限されています。" delegate:delegate cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:IDP_AUTHORIZATION_ALERT_ASSETS_TITLE message:IDP_AUTHORIZATION_ALERT_ASSETS_RESTRICT_MESSAGE delegate:delegate cancelButtonTitle:IDP_AUTHORIZATION_ALERT_OK otherButtonTitles:nil];
                 alertView.tag = tag;
                 [alertView show];
             }
@@ -642,7 +647,9 @@ static BOOL s_acceptPushNotification = NO;
                                                    }
                  ];
             }else{
-                
+                _completion(nil,IDPAuthorizationViewControllerAuthorizationNoAvailable);
+                _completion = nil;
+                [IDPAuthorizationViewController closeIntroduction];
             }
         }
             break;

@@ -20,6 +20,14 @@
     [super viewDidLoad];
 }
 
+static IDPAuthorizationViewControllerAuthorizationType s_authorizationType = IDPAuthorizationViewControllerAuthorizationTypePushNotification;
+
+- (IBAction)firedAlert:(id)sender
+{
+    [IDPAuthorizationViewController showDenyAlertWithAuthorizationType:s_authorizationType];
+    
+}
+
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -46,6 +54,7 @@
             case IDPAuthorizationViewControllerAuthorizationStatusCancel:
                 break;
             case IDPAuthorizationViewControllerAuthorizationNoAvailable:
+                [IDPAuthorizationViewController showDenyAlertWithAuthorizationType:s_authorizationType];
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusFailure:
                 break;
