@@ -20,7 +20,7 @@
     [super viewDidLoad];
 }
 
-static IDPAuthorizationViewControllerAuthorizationType s_authorizationType = IDPAuthorizationViewControllerAuthorizationTypePushNotification;
+static IDPAuthorizationViewControllerAuthorizationType s_authorizationType = IDPAuthorizationViewControllerAuthorizationTypeTwitter;
 
 - (IBAction)firedAlert:(id)sender
 {
@@ -32,14 +32,11 @@ static IDPAuthorizationViewControllerAuthorizationType s_authorizationType = IDP
 {
     [super viewDidAppear:animated];
     
-    BOOL isAvailable = [UIApplication sharedApplication].enabledRemoteNotificationTypes & (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert) ? YES : NO;
-    NSLog(@"isAvailable=%@",isAvailable ? @"YES" : @"NO" );
-    
-    [IDPAuthorizationViewController authorizationWithAuthorizationType:IDPAuthorizationViewControllerAuthorizationTypeTwitter option:nil
+    [IDPAuthorizationViewController authorizationWithAuthorizationType:s_authorizationType option:nil
                                                         viewController:self completion:^(NSError *error, IDPAuthorizationViewControllerAuthorizationStatus authorizationStatus) {
         
         switch (authorizationStatus) {
-            case IDPAuthorizationViewControllerAuthorizationContinuePushNotificationRegistration:
+            case IDPAuthorizationViewControllerAuthorizationStatusContinuePushNotificationRegistration:
                 [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert];
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusAuthorized:
@@ -53,7 +50,7 @@ static IDPAuthorizationViewControllerAuthorizationType s_authorizationType = IDP
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusCancel:
                 break;
-            case IDPAuthorizationViewControllerAuthorizationNoAvailable:
+            case IDPAuthorizationViewControllerAuthorizationStatusNoAvailable:
                 [IDPAuthorizationViewController showDenyAlertWithAuthorizationType:s_authorizationType];
                 break;
             case IDPAuthorizationViewControllerAuthorizationStatusFailure:
